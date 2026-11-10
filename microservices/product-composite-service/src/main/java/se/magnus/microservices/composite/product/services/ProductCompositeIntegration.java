@@ -2,8 +2,8 @@ package se.magnus.microservices.composite.product.services;
 
 import static org.springframework.http.HttpMethod.GET;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -71,7 +71,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         case NOT_FOUND:
           throw new NotFoundException(getErrorMessage(ex));
 
-        case UNPROCESSABLE_ENTITY:
+        case UNPROCESSABLE_CONTENT:
           throw new InvalidInputException(getErrorMessage(ex));
 
         default:
@@ -85,7 +85,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   private String getErrorMessage(HttpClientErrorException ex) {
     try {
       return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (IOException ioex) {
+    } catch (JacksonException jex) {
       return ex.getMessage();
     }
   }
