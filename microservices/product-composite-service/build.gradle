@@ -30,6 +30,9 @@ dependencies {
 	//pg 110
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
 	
+	//ch05
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:3.0.0'
+
 }
 
 tasks.named('test') {
