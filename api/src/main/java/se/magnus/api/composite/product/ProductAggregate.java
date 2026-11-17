@@ -3,12 +3,21 @@ package se.magnus.api.composite.product;
 import java.util.List;
 
 public class ProductAggregate {
-  private final int productId;
-  private final String name;
-  private final int weight;
-  private final List<RecommendationSummary> recommendations;
-  private final List<ReviewSummary> reviews;
-  private final ServiceAddresses serviceAddresses;
+  private int productId;
+  private String name;
+  private int weight;
+  private List<RecommendationSummary> recommendations;
+  private List<ReviewSummary> reviews;
+  private ServiceAddresses serviceAddresses;
+
+  public ProductAggregate() {
+    productId = 0;
+    name = null;
+    weight = 0;
+    recommendations = null;
+    reviews = null;
+    serviceAddresses = null;
+  }
 
   public ProductAggregate(
     int productId,

@@ -18,6 +18,8 @@ repositories {
 
 ext {
     springBootVersion = '4.0.9'
+
+    mapstructVersion = "1.6.3"
 }
 
 dependencies {

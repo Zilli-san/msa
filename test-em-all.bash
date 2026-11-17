@@ -51,7 +51,7 @@ function assertEqual() {
 
 function testUrl() {
   url=$@
-  if curl $url -ks -f -o /dev/null
+  if $url -ks -f -o /dev/null
   then
     return 0
   else
@@ -79,6 +79,45 @@ function waitForService() {
 }
 
 
+function setupTestdata() {
+
+  body=\
+'{"productId":1,"name":"product 1","weight":1, "recommendations":[
+        {"recommendationId":1,"author":"author 1","rate":1,"content":"content 1"},
+        {"recommendationId":2,"author":"author 2","rate":2,"content":"content 2"},
+        {"recommendationId":3,"author":"author 3","rate":3,"content":"content 3"}
+    ], "reviews":[
+        {"reviewId":1,"author":"author 1","subject":"subject 1","content":"content 1"},
+        {"reviewId":2,"author":"author 2","subject":"subject 2","content":"content 2"},
+        {"reviewId":3,"author":"author 3","subject":"subject 3","content":"content 3"}
+    ]}'
+  recreateComposite 1 "$body"
+
+  body=\
+'{"productId":113,"name":"product 113","weight":113, "reviews":[
+    {"reviewId":1,"author":"author 1","subject":"subject 1","content":"content 1"},
+    {"reviewId":2,"author":"author 2","subject":"subject 2","content":"content 2"},
+    {"reviewId":3,"author":"author 3","subject":"subject 3","content":"content 3"}
+]}'
+  recreateComposite 113 "$body"
+
+  body=\
+'{"productId":213,"name":"product 213","weight":213, "recommendations":[
+    {"recommendationId":1,"author":"author 1","rate":1,"content":"content 1"},
+    {"recommendationId":2,"author":"author 2","rate":2,"content":"content 2"},
+    {"recommendationId":3,"author":"author 3","rate":3,"content":"content 3"}
+]}'
+  recreateComposite 213 "$body"
+}
+
+function recreateComposite() {
+  local productId=$1
+  local composite=$2
+
+  assertCurl 200 "curl -X DELETE http://$HOST:$PORT/product-composite/${productId} -s"
+  curl -X POST http://$HOST:$PORT/product-composite -H "Content-Type: application/json" --data "$composite"
+}
+
 set -e
 
 echo -e "Starting 'Product Composite Service Tests' ....\n"
@@ -96,7 +135,9 @@ then
   docker-compose up -d
 fi
 
-waitForService http://$HOST:${PORT}/product-composite/1
+waitForService curl -X DELETE http://$HOST:$PORT/product-composite/$PROD_ID_NOT_FOUND
+
+setupTestdata
 
 
 
